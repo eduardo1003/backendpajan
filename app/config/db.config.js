@@ -1,8 +1,8 @@
 module.exports = {
-  HOST: "ep-royal-sound-acuhwauy-pooler.sa-east-1.aws.neon.tech",
-  USER: "syllabus2025_owner", // Reemplaza "root" con el usuario correcto si es diferente
-  PASSWORD: "npg_9dZ3ouCacVhN",
-  DB: "syllabus2025",
+  HOST: "",
+  USER: "", // Reemplaza "root" con el usuario correcto si es diferente
+  PASSWORD: "",
+  DB: "",
   dialect: "postgres",
   pool: {
     max: 5,

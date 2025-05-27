@@ -1,70 +1,120 @@
-const express = require("express");
-const cors = require("cors");
-
-const app = express();
-
-var corsOptions = {
-  origin: "http://localhost:8081",
-};
-
-app.use(cors(corsOptions));
-
-const db = require("./app/models");
+const db = require("../models");
+const config = require("../config/auth.config");
+const User = db.user;
 const Role = db.role;
 
-// Prueba la conexión antes de sincronizar
-db.sequelize
-  .authenticate()
-  .then(() => {
-    console.log("Conexión exitosa a la base de datos");
-    // Sincronizar solo si la conexión funciona
-    return db.sequelize.sync();
+var jwt = require("jsonwebtoken");
+var bcrypt = require("bcryptjs");
+
+exports.signup = (req, res) => {
+  const user = new User({
+    username: req.body.username,
+    email: req.body.email,
+    password: bcrypt.hashSync(req.body.password, 8)
+  });
+
+  user.save((err, user) => {
+    if (err) {
+      res.status(500).send({ message: err });
+      return;
+    }
+
+    if (req.body.roles) {
+      Role.find(
+        {
+          name: { $in: req.body.roles }
+        },
+        (err, roles) => {
+          if (err) {
+            res.status(500).send({ message: err });
+            return;
+          }
+
+          user.roles = roles.map(role => role._id);
+          user.save(err => {
+            if (err) {
+              res.status(500).send({ message: err });
+              return;
+            }
+
+            res.send({ message: "Usuario registrado exitosamente!" });
+          });
+        }
+      );
+    } else {
+      Role.findOne({ name: "user" }, (err, role) => {
+        if (err) {
+          res.status(500).send({ message: err });
+          return;
+        }
+
+        user.roles = [role._id];
+        user.save(err => {
+          if (err) {
+            res.status(500).send({ message: err });
+            return;
+          }
+
+          res.send({ message: "Usuario registrado exitosamente!" });
+        });
+      });
+    }
+  });
+};
+
+exports.signin = (req, res) => {
+  User.findOne({
+    username: req.body.username
   })
-  .then(() => {
-    console.log("Database synced");
-    Role.count().then((count) => {
-      if (count === 0) {
-        initial();
+    .populate("roles", "-__v")
+    .exec((err, user) => {
+      if (err) {
+        res.status(500).send({ message: err });
+        return;
       }
+
+      if (!user) {
+        return res.status(404).send({ message: "Usuario no encontrado." });
+      }
+
+      var passwordIsValid = bcrypt.compareSync(
+        req.body.password,
+        user.password
+      );
+
+      if (!passwordIsValid) {
+        return res.status(401).send({
+          accessToken: null,
+          message: "Contraseña inválida!"
+        });
+      }
+
+      var token = jwt.sign({ id: user.id }, config.secret, {
+        expiresIn: 86400 // 24 hours
+      });
+
+      var authorities = [];
+
+      for (let i = 0; i < user.roles.length; i++) {
+        authorities.push("ROLE_" + user.roles[i].name.toUpperCase());
+      }
+      res.status(200).send({
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        roles: authorities,
+        accessToken: token
+      });
     });
-  })
-  .catch((err) => {
-    console.error("Error al conectar a la base de datos:", err);
-    process.exit(1); // Termina el proceso si falla la conexión
-  });
+};
 
-function initial() {
-  const roles = [
-    { id: 1, name: "user" },
-    { id: 2, name: "moderator" },
-    { id: 3, name: "admin" },
-    { id: 4, name: "docente" },
-    { id: 5, name: "estudiante" },
-    { id: 6, name: "operador_sistema" },
-    { id: 7, name: "coordinador" },
-    { id: 8, name: "secretaria" },
-    { id: 9, name: "decano" },
-    { id: 10, name: "comision_silabos" },
-  ];
-
-  roles.forEach((role) => {
-    Role.create(role).catch((err) => {
-      console.error("Error creating role:", err);
+exports.signout = async (req, res) => {
+  try {
+    req.session = null;
+    return res.status(200).send({
+      message: "Sesión cerrada exitosamente!"
     });
-  });
-}
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-app.get("/", (req, res) => {
-  res.json({ message: "Welcome to the application." });
-});
-
-const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
-  console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
-});
-
-require("./app/routes/auth.routes")(app);
-require("./app/routes/user.routes")(app);
+  } catch (err) {
+    this.next(err);
+  }
+};

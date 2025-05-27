@@ -1,3 +1,3 @@
 module.exports = {
-    secret: "Criss-secret-key"
+    secret: "pajan-secret-key"
   };

@@ -28,138 +28,59 @@ isAdmin = (req, res, next) => {
           return;
         }
       }
-
       res.status(403).send({ message: "Require Admin Role!" });
     });
   });
 };
 
-isModerator = (req, res, next) => {
+isTic = (req, res, next) => {
   User.findByPk(req.userId).then(user => {
     user.getRoles().then(roles => {
       for (let i = 0; i < roles.length; i++) {
-        if (roles[i].name === "moderator") {
+        if (roles[i].name === "tic") {
           next();
           return;
         }
       }
-
-      res.status(403).send({ message: "Require Moderator Role!" });
+      res.status(403).send({ message: "Require TIC Role!" });
     });
   });
 };
 
-isDocente = (req, res, next) => {
+isParticipacion = (req, res, next) => {
   User.findByPk(req.userId).then(user => {
     user.getRoles().then(roles => {
       for (let i = 0; i < roles.length; i++) {
-        if (roles[i].name === "docente") {
+        if (roles[i].name === "participacion") {
           next();
           return;
         }
       }
-
-      res.status(403).send({ message: "Require Docente Role!" });
+      res.status(403).send({ message: "Require Participación Role!" });
     });
   });
 };
 
-isEstudiante = (req, res, next) => {
+isComunicacion = (req, res, next) => {
   User.findByPk(req.userId).then(user => {
     user.getRoles().then(roles => {
       for (let i = 0; i < roles.length; i++) {
-        if (roles[i].name === "estudiante") {
+        if (roles[i].name === "comunicacion") {
           next();
           return;
         }
       }
-
-      res.status(403).send({ message: "Require Estudiante Role!" });
+      res.status(403).send({ message: "Require Comunicación Role!" });
     });
   });
 };
-
-isOperadorSistema = (req, res, next) => {
-  User.findByPk(req.userId).then(user => {
-    user.getRoles().then(roles => {
-      for (let i = 0; i < roles.length; i++) {
-        if (roles[i].name === "operador_sistema") {
-          next();
-          return;
-        }
-      }
-
-      res.status(403).send({ message: "Require Operador del Sistema Role!" });
-    });
-  });
-};
-isCoordinador = (req, res, next) => {
-  User.findByPk(req.userId).then(user => {
-    user.getRoles().then(roles => {
-      for (let i = 0; i < roles.length; i++) {
-        if (roles[i].name === "coordinador") {
-          next();
-          return;
-        }
-      }
-      res.status(403).send({ message: "Require Coordinador Role!" });
-    });
-  });
-};
-
-isSecretaria = (req, res, next) => {
-  User.findByPk(req.userId).then(user => {
-    user.getRoles().then(roles => {
-      for (let i = 0; i < roles.length; i++) {
-        if (roles[i].name === "secretaria") {
-          next();
-          return;
-        }
-      }
-      res.status(403).send({ message: "Require Secretaria Role!" });
-    });
-  });
-};
-
-isDecano = (req, res, next) => {
-  User.findByPk(req.userId).then(user => {
-    user.getRoles().then(roles => {
-      for (let i = 0; i < roles.length; i++) {
-        if (roles[i].name === "decano") {
-          next();
-          return;
-        }
-      }
-      res.status(403).send({ message: "Require Decano Role!" });
-    });
-  });
-};
-isComisionSilabos = (req, res, next) => {
-  User.findByPk(req.userId).then(user => {
-    user.getRoles().then(roles => {
-      for (let i = 0; i < roles.length; i++) {
-        if (roles[i].name === "comision_silabos") {
-          next();
-          return;
-        }
-      }
-      res.status(403).send({ message: "Require Comision de Silabos Role!" });
-    });
-  });
-};
-
 
 const authJwt = {
   verifyToken,
   isAdmin,
-  isModerator,
-  isDocente,
-  isEstudiante,
-  isOperadorSistema,
-  isCoordinador,       // Agregado
-  isSecretaria,        // Agregado
-  isDecano,            // Agregado
-  isComisionSilabos    // Agregado
+  isTic,
+  isParticipacion,
+  isComunicacion
 };
 
 module.exports = authJwt;

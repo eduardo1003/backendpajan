@@ -31,16 +31,10 @@ db.user.belongsToMany(db.role, {
 });
 
 db.ROLES = [
-  "user",
   "admin",
-  "moderator",
-  "docente",
-  "estudiante",
-  "operador_sistema",
-  "coordinador",
-  "secretaria",
-  "decano",
-  "comision_silabos",
+  "tic",
+  "participacion",
+  "comunicacion"
 ];
 
 module.exports = db;
