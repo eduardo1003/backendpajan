@@ -1,8 +1,8 @@
 module.exports = {
-  HOST: "dpg-cvkrgi3e5dus73bt6ji0-a.oregon-postgres.render.com",
-  USER: "root", // Reemplaza "root" con el usuario correcto si es diferente
-  PASSWORD: "LIfjDoBnekl6DK1m2I6s2jJbeRs9LTnk",
-  DB: "syllabus_41et",
+  HOST: "ep-royal-sound-acuhwauy-pooler.sa-east-1.aws.neon.tech",
+  USER: "syllabus2025_owner", // Reemplaza "root" con el usuario correcto si es diferente
+  PASSWORD: "npg_9dZ3ouCacVhN",
+  DB: "syllabus2025",
   dialect: "postgres",
   pool: {
     max: 5,
@@ -11,10 +11,7 @@ module.exports = {
     idle: 10000,
   },
   dialectOptions: {
-    ssl: {
-      require: true,
-      rejectUnauthorized: false,
-    },
+    ssl: false,
     keepAlive: true,
     connectTimeout: 120000,
   },

@@ -9,6 +9,8 @@ module.exports = (sequelize, Sequelize) => {
     password: {
       type: Sequelize.STRING
     }
+  }, {
+    schema: 'public' // <- Asegura que se use el esquema "public"
   });
 
   return User;
