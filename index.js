@@ -21,12 +21,11 @@ app.use(express.urlencoded({ extended: true }));
 const db = require("./app/models");
 const Role = db.role;
 
-// db.sequelize.sync({ force: true }).then(() => {
-//   console.log('Resync Db');
-//   initial();
-// });
-
-db.sequelize.sync();
+// Sincronización de la base de datos e inicialización de roles
+db.sequelize.sync().then(() => {
+  console.log('Database connected and synced');
+  initial();
+});
 
 // simple route
 app.get("/", (req, res) => {
@@ -44,29 +43,17 @@ app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });
 
-function initial() {
-  Role.create({
-    id: 1,
-    name: "user"
-  });
+async function initial() {
+  const count = await Role.count();
+  if (count > 0) return;
 
-  Role.create({
-    id: 2,
-    name: "tic"
-  });
-
-  Role.create({
-    id: 3,
-    name: "admin"
-  });
-
-  Role.create({
-    id: 4,
-    name: "participacion"
-  });
-
-  Role.create({
-    id: 5,
-    name: "comunicacion"
-  });
+  await Promise.all([
+    Role.create({ id: 1, name: "user" }),
+    Role.create({ id: 2, name: "tic" }),
+    Role.create({ id: 3, name: "admin" }),
+    Role.create({ id: 4, name: "participacion" }),
+    Role.create({ id: 5, name: "comunicacion" }),
+    Role.create({ id: 6, name: "transparencia" })
+  ]);
+  console.log("Roles initialized");
 }
