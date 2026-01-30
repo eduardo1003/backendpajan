@@ -6,14 +6,15 @@ const PASSWORD = process.env.PASSWORD;
 const DB = process.env.DATABASE;
 const URL = process.env.DATABASE_URL; // Render suele dar esta variable
 
-if (!URL && (!HOST || !USER || !DB)) {
-  console.error("CRÍTICO: Faltan variables de entorno para la base de datos.");
-  console.log("Configuración detectada:", {
+console.log("Iniciando conexión a DB...");
+if (URL) {
+  console.log("Usando DATABASE_URL para la conexión");
+} else {
+  console.log("Configuración manual detectada:", {
     host: HOST ? "OK" : "FALTA",
     user: USER ? "OK" : "FALTA",
     db: DB ? "OK" : "FALTA",
-    pass: PASSWORD ? "OK" : "FALTA",
-    url: URL ? "Detectada" : "No detectada"
+    pass: PASSWORD ? "OK" : "FALTA"
   });
 }
 
@@ -21,7 +22,7 @@ module.exports = {
   URL: URL,
   HOST: HOST,
   USER: USER,
-  PASSWORD: PASSWORD ? String(PASSWORD) : "",
+  PASSWORD: PASSWORD ? String(PASSWORD) : undefined,
   DB: DB,
   dialect: "postgres",
   pool: {
