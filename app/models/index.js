@@ -1,19 +1,24 @@
 const config = require("../config/db.config.js");
 const Sequelize = require("sequelize");
 
-const sequelize = new Sequelize(config.DB, config.USER, config.PASSWORD, {
-  host: config.HOST,
-  port: config.PORT, // Agrega el puerto explícitamente
-  dialect: config.dialect,
-  pool: {
-    max: config.pool.max,
-    min: config.pool.min,
-    acquire: config.pool.acquire,
-    idle: config.pool.idle,
-  },
-  dialectOptions: config.dialectOptions, // Incluye SSL y otras opciones
-  retry: config.retry, // Incluye la configuración de reintentos
-});
+let sequelize;
+if (config.URL) {
+  sequelize = new Sequelize(config.URL, {
+    dialect: config.dialect,
+    pool: config.pool,
+    dialectOptions: config.dialectOptions,
+    retry: config.retry
+  });
+} else {
+  sequelize = new Sequelize(config.DB, config.USER, config.PASSWORD, {
+    host: config.HOST,
+    port: config.PORT,
+    dialect: config.dialect,
+    pool: config.pool,
+    dialectOptions: config.dialectOptions,
+    retry: config.retry,
+  });
+}
 
 const db = {};
 

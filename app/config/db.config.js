@@ -2,17 +2,26 @@ require('dotenv').config();
 
 const HOST = process.env.HOST;
 const USER = process.env.USER;
-const PASSWORD = process.env.PASSWORD || ""; // Asegura que sea string aunque esté vacío
+const PASSWORD = process.env.PASSWORD;
 const DB = process.env.DATABASE;
+const URL = process.env.DATABASE_URL; // Render suele dar esta variable
 
-if (!HOST || !USER || !DB) {
-  console.error("CRÍTICO: Faltan variables de entorno para la base de datos (HOST, USER o DATABASE)");
+if (!URL && (!HOST || !USER || !DB)) {
+  console.error("CRÍTICO: Faltan variables de entorno para la base de datos.");
+  console.log("Configuración detectada:", {
+    host: HOST ? "OK" : "FALTA",
+    user: USER ? "OK" : "FALTA",
+    db: DB ? "OK" : "FALTA",
+    pass: PASSWORD ? "OK" : "FALTA",
+    url: URL ? "Detectada" : "No detectada"
+  });
 }
 
 module.exports = {
+  URL: URL,
   HOST: HOST,
   USER: USER,
-  PASSWORD: String(PASSWORD), // Forzar a string
+  PASSWORD: PASSWORD ? String(PASSWORD) : "",
   DB: DB,
   dialect: "postgres",
   pool: {
