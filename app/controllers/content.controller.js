@@ -50,8 +50,8 @@ exports.findBySection = (req, res) => {
     Content.findAll({
         where: {
             section: section,
-            status: 'published',
-            isPublic: true
+            status: 'published'
+            // isPublic: true // Temprarily removed to ensure content visibility
         },
         order: [['order', 'ASC']]
     })

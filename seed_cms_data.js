@@ -4,7 +4,7 @@ const News = db.news;
 
 const seed = async () => {
     try {
-        await db.sequelize.sync();
+        await db.sequelize.sync({ alter: true });
 
         // 1. Home Content
         const homeContent = [
@@ -15,7 +15,8 @@ const seed = async () => {
                 section: "inicio",
                 type: "page",
                 order: 1,
-                status: "published"
+                status: "published",
+                isPublic: true
             },
             {
                 title: "Gestión Transparente",
@@ -24,7 +25,8 @@ const seed = async () => {
                 section: "inicio",
                 type: "block",
                 order: 2,
-                status: "published"
+                status: "published",
+                isPublic: true
             },
             {
                 title: "Participación Ciudadana",
@@ -33,7 +35,8 @@ const seed = async () => {
                 section: "inicio",
                 type: "block",
                 order: 3,
-                status: "published"
+                status: "published",
+                isPublic: true
             },
             {
                 title: "Desarrollo Sostenible",
@@ -42,7 +45,8 @@ const seed = async () => {
                 section: "inicio",
                 type: "block",
                 order: 4,
-                status: "published"
+                status: "published",
+                isPublic: true
             }
         ];
 
@@ -63,7 +67,8 @@ const seed = async () => {
                 section: "mision-vision",
                 type: "page",
                 order: 1,
-                status: "published"
+                status: "published",
+                isPublic: true
             },
             {
                 title: "Nuestra Visión",
@@ -74,7 +79,8 @@ const seed = async () => {
                 section: "mision-vision",
                 type: "page",
                 order: 2,
-                status: "published"
+                status: "published",
+                isPublic: true
             },
             {
                 title: "Nuestros Valores",
@@ -89,7 +95,8 @@ const seed = async () => {
                 section: "mision-vision",
                 type: "block",
                 order: 3,
-                status: "published"
+                status: "published",
+                isPublic: true
             }
         ];
 
@@ -102,7 +109,8 @@ const seed = async () => {
                 section: "historia",
                 type: "page",
                 order: 1,
-                status: "published"
+                status: "published",
+                isPublic: true
             }
         ];
 
@@ -156,11 +164,11 @@ const seed = async () => {
         }
 
         console.log("Seeding completed successfully.");
-        process.exit(0);
+        // process.exit(0);
     } catch (error) {
         console.error("Error seeding data:", error);
-        process.exit(1);
+        // process.exit(1);
     }
 };
 
-seed();
+module.exports = seed;

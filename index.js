@@ -23,9 +23,18 @@ const db = require("./app/models");
 const Role = db.role;
 
 // Sincronización de la base de datos e inicialización de roles
-db.sequelize.sync().then(() => {
+db.sequelize.sync({ alter: true }).then(async () => {
   console.log('Database connected and synced');
-  initial();
+  await initial();
+
+  // Auto-run seed/fix for checking content on startup
+  try {
+    const seed = require('./seed_cms_data');
+    console.log('Running auto-seed/fix...');
+    await seed();
+  } catch (err) {
+    console.error('Auto-seed failed:', err);
+  }
 });
 
 // simple route
